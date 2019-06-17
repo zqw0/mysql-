@@ -1,0 +1,96 @@
+
+#常见约束
+
+分类：6大约束
+    NOT NULL:非空约束
+    DEFAULT:默认，用于保证该字段有默认值
+    比如性别
+    PRIMARY KEY:主键，用于保证该字段的值具有唯一性，并且非空，比如学号，员工编号
+    UNIQUE:唯一，用于保证该字段的值具有唯一性，可以为空
+    比如，座位号
+    CHECK:检查约束【MYSQL不支持】
+    FOREIGN KEY：外键，用于限制两个表的关系，用于保证该字段的值必须来自于主表关联列的值
+    在从表添加外键约束，用于引用主表中某列的值
+    比如：专业编号，部门编号
+
+添加约束的时机：
+    1.创建表时
+    2.创建表时
+
+约束分类：
+    列级约束：
+        6大约束语法上都支持，但外键约束没有效果
+    表级约束：
+        除了非空，默认，其他都支持
+#创建表时添加约束
+CREATE TABLE ta(
+    id INT PRIMARY KEY,
+    stuname VARCHAR(20) NOT NULL,
+    gender CHAR(1),
+    seat INT UNIQUE,
+    age INT DEFAULT 18,
+    majorid INT,
+
+    CONSTRAINT PK PRIMARY KEY(id),#添加主键的第二种方法
+    CONSTRAINT UQ UNIQUE(seat),#添加唯一键的第二种方法
+    CONSTRAINT FK FOREIGN KEY(majorid) REFERENCES major(id)
+);
+
+CREATE TBALE major(
+    id INT PRIMARY KEY,
+    majorname VARCHAR(20)
+);
+
+#主键和唯一的区别：
+            保证唯一性       是否可以为空      一个表中可以有多少个      是否允许组合
+主键          可以              不可以             至多有一个               允许，但不推荐
+唯一          可以              可以               可以有多个               允许，但不推荐
+
+#外键
+    1.要求在从表设置外键关系
+    2.从表的外键列的类型和主表的关联列类型要求一致或兼容，名称无要求
+    3.主表的关联列必须是一个key（一般是主键或唯一键）
+    4.插入数据时，先插入主表，再插入从表
+    5.删除数据是，先删除从表，在删除主表
+
+#2、修改表时添加约束
+#1.添加非空约束
+ALTER TABLE 表名 MODIFY COLUMN 列名 类型 NOT NULL;
+
+#2.添加默认约束
+ALTER TABLE 表名 MODIFY COLUMN 列名 类型 DEFAULT 18;
+
+#3.添加主键
+ALTER TABLE 表名 MODIFY COLUMN 列名 类型 PRIMARY KEY;
+
+#3添加外键
+ALTER TABLE 表名 ADD FOREIGN KEY(主表名) REFERENCE 主表列名(从表列名);
+
+#3、修改表时删除非空约束
+ALTER TABLE 表名 MODIFY COLUMN 列名 类型 NULL;
+
+#4、删除默认约束
+ALTER TABLE 表名 MODIFY COLUMN 列名 类型;
+
+#5删除主键
+ALTER TABLE 表名 DROP PRIMARY KEY;
+
+#6删除唯一
+ALTER TABLE 表名 DROP INDEX 列名;
+
+#7删除外键
+ALTER TABLE 表名 DROP FOREIGN KEY 列名;
+
+#标识列
+又称为自增长列
+含义：可以不用手动插入值，系统提供默认的序列值
+特点：要求一定要和键搭配使用，不一定要和主键搭配使用
+      只能有一个字增长列
+      标识列的类型要设置为数值型，INT ,FLOAT,DOUBLE
+      标识列通过SET auto_increment_increment=3设置偏移量
+      标识列通过先插入一个值设置起始增长数
+1.创建表时设置标识列
+CREATE TABLE t1(
+    id INT PARMARY KEY AUTO_INCREMENT,
+);
+自动增长 AUTO_INCREMENT;
