@@ -1,0 +1,32 @@
+#1.无参有返回
+#案例：返回公司的员工个数
+CREATE FUNCTION myf1() RETURNS INT
+BEGIN
+    DECLARE ans;
+    SELECT COUNT(*) INTO ans;
+    FROM employees;
+    RETURN ans;
+END $
+
+SELECT myf1()$
+
+#2.有参有返回
+#案例：根据员工名，返回他的工资
+CREATE FUNCTION myf2(empname VARCHAR(20)) RETURNS DOUBLE
+BEGIN
+    DECLARE sal;
+    SELECT salary INTO sal
+    FROM employees
+    WHERE last_name=empname;
+
+    RETURN sal;
+END $
+
+SELECT myf2('john');
+
+#案例：创建函数，实现传入两个float,返回二者之和
+DELIMITER $
+CREATE FUNCTION myf3(a FLOAT,b FLOAT) RETURNS FLOAT
+BEGIN
+    RETURN a+b;
+END $
