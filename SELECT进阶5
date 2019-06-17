@@ -1,0 +1,71 @@
+#进阶5：分组查询
+语法：
+SELECT column           ---5
+FROM tables             ---1
+[WHERE condition]       ---2
+[GROUP BY ..]           ---3
+[HAVING ..]             ---4
+[ORDER BY ..]           ---6
+
+#案例1：查询每个工种的最高工资
+SELECT MAX(salary),job_id
+FROM employees
+GROUP BY job_id;
+
+#案例2：查询每个位置上的部门个数
+SELECT COUNT(*),id
+FROM department
+GROUP BY id;
+
+#案例3：查询邮箱中包含a字符的，每个部门的平均工资
+SELECT AVG(salary),id
+FROM table
+WHERE email like '%a%'
+GROUP BY id;
+
+#案例4：查询有奖金的每个领导手下员工的最高工资
+SELECT MAX(salary),id
+FROM table
+WHERE commission IS NOT NULL
+GROUP BY id;
+
+HAVING 字句是分组后的过滤。
+WHERE 字句是分组钱的过滤。
+#案例5：查询部门人数>2的部门编号
+SELECT department_id
+FROM table
+GROUP BY department_id;
+HAVING COUNT(*)>2;
+
+#案例6：查询每个工种有奖金的员工的最高工资>12000的工种编号和最高工资
+SELECT id,MAX(salary)
+FROM employees
+WHERE commission IS NOT NULL
+GROUP BY id
+HAVING MAX(salary)>12000;
+
+#案例7：查询领导编号>102的每个领导手下的最低工资>5000的领导编号是哪个
+SELECT id
+FROM employees
+WHERE id>102
+GROUP BY id
+HVAING MIN(salary)>5000;
+
+#案例8：按员工姓名的长度分组，查询每一组的员工个数，筛选员工个数>5的有哪些
+SELECT id,COUNT(*)
+FROM employees
+GROUP BY LENGTH(last_name)
+HAVING COUNT(*)>5;
+
+#按多个字段分组
+#案例9：查询每个部门每个工种的员工的平均工资
+SELECT AVG(salary),department_id,job_id
+FROM employees
+GROUP BY department_id,job_id;
+
+#添加排序
+#案例10：查询每个部门每个工种的员工的平均工资，按照平均工资排序
+SELECT AVG(salary),department_id,job_id
+FROM employees
+GROUP BY department_id,job_id
+ORDER BY AVG(salary) DESC;
