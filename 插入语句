@@ -1,0 +1,19 @@
+1.插入语句
+语法 insert into 表名(列名,...) values(值1,...);
+可以省略列表，默认所有列，而且列的顺序和表中列的顺序一致
+#方式2语法
+INSERT INTO 表名
+SET 列名=值,列名=值
+
+INSERT INTO girl
+SET name='123',phone='123';
+
+方式1：支持插入多行
+INSER INTO girl(name,phone)
+VALUES ('name','123456'),
+('name','123456'),
+('name','123456');
+
+方式1：支持子查询
+INSERT INTO girl(name,phone)
+SELECT 'zqw','1234';
