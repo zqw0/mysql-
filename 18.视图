@@ -1,0 +1,65 @@
+#视图
+含义：虚拟的表，行和列的数据来自定义视图的查询中使用的表，并且是在使用视图时动态生成的，
+只保存了SQL逻辑，不保存查询结果
+应用场景：
+    1.多个地方用到同样的查询结果
+    2.该查询结果使用的SQL语句比较复杂
+实例：
+    CREATE VIEW my_v1
+    AS
+    SELECT last_name,id
+    FROM employees;
+#案例1：查询姓名中包含a字符的员工名，部门名，和工种信息
+CREATE VIEW myv1
+AS
+SELECT last_name,department_name,job_title
+FROM employees e
+JOIN departments d ON e.department_id=d.department_id
+JOIN jobs j ON j.job_id=e.job_id;
+
+SELECT * FROM myv1 WHERE last_name LIKE '%a%';
+
+#案例2：查询各部门的平均工资级别
+CREATE VIEW myv2
+AS
+SELECT department_name,AVG(salary) ag
+FROM departments d
+JOIN employees e ON d.department_id=e.department_id
+GROUP BY department_id;
+
+SELECT department_name,grade_level
+FROM myv2 m
+JOIN grade g ON m.ag BETWEEN g.low_sal AND g.hig_sal;
+
+#视图的修改
+#方式一：
+create or replace view 视图名
+as
+查询语句;
+#方式二：
+ALTER VIEW 视图名
+AS
+查询语句;
+
+#删除视图
+语法：DROP VIEW 视图名,视图名....;
+
+#查看视图
+DESC 视图名;
+
+#视图的更新
+#1插入数据
+INSERT INTO myv1 VALUES('123','123');
+
+#2修改数据
+UPDATE myv1 SET last_name='123' WHERE id=1;
+
+#3删除
+DELETE FROM myv1 WHERE id=1;
+会对原始表造成影响
+
+包含以下关键字的sql语句：分组函数、distinct,group by,having,union,join 是不允许更改视图的
+
+#视图和表的对比
+1.创建方式不同
+2.占用空间不同，视图只是保存了SQL逻辑，而表保存了数据
