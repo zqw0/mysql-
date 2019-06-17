@@ -1,0 +1,162 @@
+#进阶7：子查询
+含义：
+出现在其他语句中的SELECT 语句，称为子查询或内查询
+
+分类：
+按子查询出现的位置：
+    SELECT 后面：
+        仅仅支持标量子查询
+    FROM 后面：
+        支持表子查询
+    WHERE或HAVING后面：
+        支持标量子查询，
+        列子查询
+        行子查询
+    EXISTS后面
+        表子查询
+按结果集的行列数不同：
+    标量子查询（结果集只有一行一列）
+    列子查询（结果集只有一列多行）
+    行子查询（结果集一行多列）
+    表自查询（结果集一般为多行多列）
+
+#一、where或having后面
+特点：
+1.子查询放在小括号内
+2.子查询一般放在条件右侧
+3.标量子查询，一般搭配单行操作符使用> < >= <= <>
+4.列子查询，搭配多行操作符使用 IN,ANY/SOME,ALL.
+
+#1标量子查询
+#案例1：谁的工资比Abel高
+SELECT *
+FROM employees
+WHERE salary>(
+
+    SELECT salary
+    FROM employees
+    WHERE last_name='Abel'
+);
+
+#案例2：返回job_id与141号员工相同,salary比143号员工多的员工姓名,job_id和工资
+SELECT name,job_id,salary
+FROM employees
+WHERE job_id=(
+    SELECT job_id
+    FROM employees
+    WHERE id=141
+)
+AND salary>(
+    SELECT salary
+    FROM employees
+    WHERE id=143
+);
+
+#案例3：返回公司工资最少的员工的last_name,job_id和salary
+SELECT last_name,job_id,salary
+FROM employees
+WHERE salary=(
+    SELECT MIN(salary)
+    FROM employee
+);
+
+#案例4：查询最低工资大于50号部门最低工资的部门id和其最低工资
+SELECT department_id,MIN(salary)
+FROM departments
+GROUP BY department_name
+HAVING MIN(salary)>(
+    SELECT MIN(salary)
+    FROM department
+    WHERE department_id=50
+);
+
+#2.列子查询（多行子查询）
+搭配多行操作符使用
+IN/NOT IN       等于列表中的任意一个
+ANY/SOME        和子查询返回的某一个值比较
+ALL             和子查询返回的所有值比较
+
+#案例1：返回location_id是1400或1700的部门中的所有员工姓名
+SELECT last_name
+FROM employees
+WHERE department_id IN(
+    SELECT department_id
+    FROM departments
+    WHERE location_id IN(1400,1700)
+);
+
+#案例2：返回其他部门中比job_id为IT_PROG部门任一工资低的员工的：工号，姓名，job_id,salary
+SELECT job_id,last_name,salary
+FROM employees
+WHERE job_id<>'IT_PROG'
+AND salary<(
+    SELECT MAX(salary)
+    FROM employees
+    WHERE job_id='IT_PROG'
+);
+#案例查询员工编号最小并且工资最高的员工信息
+SELECT *
+FROM employees
+WHERE id=(
+    SELECT MIN(id)
+    FROM employees
+    WHERE salary=(
+        SELECT MAX(salary)
+        FROM employees
+)
+);
+
+#2.select 后面
+#案例1：查询每个部门的员工个数
+SELECT d.*,(
+    SELECT COUNT(*)
+    FROM employees e
+    WHERE e.id=d.id1
+)
+FROM departments d;
+
+#案例2：查询员工号=102的部门名
+SELECT department_name
+FROM departments
+WHERE department_id=(
+    SELECT department_id
+    FROM employees
+    WHERE id=102
+);
+
+#3.FROM后面
+#案例：查询每个部门的平均工资的工资等级
+SELECT ag_dep.*,g.grade_level
+FROM(
+    SELECT AVG(salary) ag,department_id
+     FROM employees
+     GROUP BY department_id
+)ag_dep
+INNER JOIN job_grades g
+ON ag_dep.ag BETWEEN lowest_sal AND highest_sal;
+
+#4.放在exists后面--相关子查询
+语法：
+exists(完整的查询语句)
+有结果返回1，没有结果返回0
+
+#案例1：查询有员工的部门名
+SELECT department_name
+FROM departments d
+WHERE EXISTS(
+    SELECT *
+    FROM employees e
+    WHERE d.department_id=e.department_id
+);
+
+练习：
+#案例1：查询各部门中工资比本部门平均工资高的员工的员工号，姓名和工资
+SELECT id,last_name,salary
+FROM(
+    SELECT department_id,AVG(salary) ag
+    FROM employees
+    GROUP BY department_id;
+) t,
+INNER JOIN employees e
+ON t.department_id=e.department_id
+WHERE e.salary>t.ag;
