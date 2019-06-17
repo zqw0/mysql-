@@ -1,0 +1,54 @@
+进阶8：分页查询
+limit offset,size;
+#案例1：查询前5条员工信息
+SELECT * FROM employees LIMIT 0,5;
+
+练习：
+#案例1：查询工资最低的员工信息:last_name,salary;
+SELECT last_name,salary
+FROM employees
+WHERE salary=(
+    SELECT MIN(salary)
+    FROM employees
+);
+
+#案例2：查询平均工资最低的部门信息
+SELECT *
+FROM departments
+WHERE department_id=(
+    SELECT department_id
+    FROM employees
+    GROUP BY department_id
+    ORDER BY AVG(salary)
+    LIMIT 0,1
+);
+
+#案例3：查询平均工资高于公司平均工资的部门有哪些？
+SELECT *
+FROM departments
+WHERE department_id=(
+    SELECT department_id
+    FROM employees
+    GROUP BY department_id
+    HVAING AVG(salary)>(
+        SELECT AVG(salary)
+        FROM employee
+    )
+)
+
+#案例4：查询出公司中所有manager的详细信息
+SELECT *
+FROM employees e
+JOIN department d
+ON e.id=d.id;
+
+#案例5：各部门中最高工资最低的那个部门的最低工资是多少
+SELECT MIN(salary)
+FROM employees
+WHERE department_id=(
+    SELECT department_id
+    FROM employees
+    GROUP BY department_id
+    ORDER BY MAX(salary)
+    LIMIT 0,1;
+)
