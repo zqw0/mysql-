@@ -1,0 +1,126 @@
+#1.空参列表
+#案例：插入到admin表中5条记录
+DELIMITER $
+CREATE PROCEDURE myp1()
+BEGIN
+    INSERT INTO VALUES('123','123'),VALUES('123','123'),VALUES('123','123'),
+    VALUES('123','123'),VALUES('123','123');
+END $
+
+#调用
+CALL myp1()$
+
+#2.in模式参数的存储过程
+#案例1：创建存储过程实现 根据女神名，查询对应的男神信息
+CREATER PROCEDURE myp2(IN girlname varchar(20))
+BEGIN
+    SELECT bo.*
+    FROM boys b
+    RIGHT JOIN girl g ON b.id=b.id
+    WHERE g.name=birlname;
+END $
+
+#调用
+CALL myp2('女孩')$
+
+#案例2：创建存储过程实现，用户是否登录成功
+CREATER PROCEDURE myp3(IN uname VARCHAR(20),IN pwd VARCHAR(20))
+BEGIN
+    DECLARE result VARCHAR(20) DEFAULT '';
+
+    SELECT COUNT(*) INTO result
+    FROM admin a
+    WHERE a.username=uname
+    AND a.pwd=pwd;
+
+    SELECT IF(result>0,'yes','no');
+END $
+
+#调用
+CALL myp3('john');
+
+#3带out模式的存储过程
+#案例1：根据女神名，返回对应的男神名
+CREATE PROCEDURE myp5(IN girlname VARCHAR(20),OUT boyname VARCHAR(20))
+BEGIN
+    SELECT b.name INTO boyname
+    FROM boys b
+    INNER JOIN girl g ON b.id=g.id
+    WHERE g.name=girlname;
+END$
+
+#调用
+SET @rec$
+CALL myp5('小赵',@rec)$
+SELECT @rec$
+
+#案例2：根据女神名，返回对应的男神名和男神魅力值
+CREATE PROCEDURE myp6(IN girlname VARCHAR(20),OUT boyname,OUT ucp INT)
+BEGIN
+    SELECT b.name,b.cp INTO boyname,ucp
+    FROM boys b
+    INNER JOIN girl g ON b.id=g.id
+    WHERE g.name=girlname;
+END$
+
+SET @rec1$
+SET @rec2$
+CALL myp6('小赵',@rec1,@rec2)$
+
+#案例1：传入a和b两个值，最终a和b都翻倍并返回
+CREATE PROCEDURE myp7(INOUT a INT,INOUT b INT)
+BEGIN
+    SET a=a*2;
+    SET b=b*2;
+END $
+
+SET @rec1=20$
+SET @rec2=30$
+CALL myp7(@rec1,@rec2)$
+
+#练习：
+#案例1：创建存储过程实现传入用户名和密码，插入到admin表中
+DELIMITER $
+CREATE PROCEDURE myp8(IN uname VARCHAR(20),IN upwd VARCHAR(20))
+BEGIN
+    INSERT INTO admin(username,userpwd) VALUES(uname,upwd);
+END $
+
+#案例2：创建存储过程或函数实现传入女神编号，返回女神名称和女神电话
+DELIMITER $
+CREATE PROCEDURE myp9(IN id INT,OUT girname VARCHAR(20),OUT girlphone VARCHAR(20))
+BEGIN
+    SELECT name,phone INTO girname,girlphone
+    FROM girl
+    WHERE girl.id=id;
+END $
+
+#案例3：创建存储过程或函数实现传入一个日期，格式化成XX年XX月XX日并返回
+/**
+date_format:将日期转换成字符
+DATE_FORMAT('2018/6/6','%Y年%m月%d日')   2018年06月06日
+**/
+DELIMITER $
+CREATE PROCEDURE myp10(IN ddate DATETIME,out o_date VARCHAR(20))
+BRGIN
+    SET o_date=DATE_FORMAT(ddate,'%Y年%m月%d日');
+END $
+
+#案例4：创建存储过程或函数实现传入女神名称，返回：女神 AND 男神 格式的字符串
+DELIMITER $
+CREATE PROCEDURE myp11(IN girlname VARCHAR(20),OUT ans VARCHAR(20))
+BEGIN
+    SET boyname;
+    SELECT b.name INTO boyname
+    FROM girl g LEFT JOIN
+    boy b ON g.id=b.id
+    WHERE g.name=girlname;
+    SET ans=CONCAT(girlname,' ADN ',boyname);
+END $
+
+#案例5：创建存储过程或函数，根据传入的条目数和起始索引，查询beauty表的记录
+DELIMITER $
+CREATE PROCEDURE myp12(IN cnt INT,IN idx INT)
+BEGIN
+    SELECT * FROM beauty limit(idx,cnt);
+END $
