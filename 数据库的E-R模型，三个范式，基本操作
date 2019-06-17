@@ -1,0 +1,30 @@
+/**
+E-R模型
+**/
+E表示entry 实体
+R表示relationsship,关系
+一个实体转换为数据库中的一个表
+关系描述两个实体之间的对应规则，包括
+1.一对一
+2.一对多
+3.多对多
+
+三范式
+第一范式（1NF）：列不可拆分
+第二范式（2NF）：唯一标识
+第三范式（3NF）：引用主键
+
+mysql 登录：mysql -h 主机名 -p 端口号 -u用户名 -p密码
+
+mysql 退出 exit
+
+desc 表名 查看表 结构
+select version()查看mysql版本
+show databases
+use 库名
+show tables;
+show tables from 库名 查看其它库的所有表
+create table 表名(
+列名 列类型，
+列名 列类型
+);
