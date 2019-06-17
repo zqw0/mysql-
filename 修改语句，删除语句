@@ -1,0 +1,15 @@
+
+修改语句：
+修改单表记录
+UPDATE 表名
+SET 列=新值,列=新值,..
+WHERE 筛选条件
+
+删除语句
+方式1：delete
+语法:
+delete from 表名 where 筛选条件
+
+方式2:TRUNCATE
+语法truncate table 表名。
+删除整个表
