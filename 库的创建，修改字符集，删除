@@ -1,0 +1,12 @@
+1.库的创建
+语法：
+create database 库命;
+
+CREATE DATABASE IF NOT EXISTS 库命;
+容错性提高。如果不存在就创建，如果存在就不创建
+
+#更改库的字符集
+ALTER DATABASE books CHARACTER SET gbk;
+
+#库的删除
+DROP DATABASE 库命;
