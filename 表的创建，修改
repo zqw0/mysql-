@@ -1,0 +1,53 @@
+#表的创建
+create table 表名(
+    列名 列的类型[(长度) 约束],
+    列名 列的类型[(长度) 约束],
+    ...
+    列名 列的类型[(长度) 约束]
+);
+
+#表的修改
+#1.修改列名
+#2.修改列的类型或约束
+#3.添加列
+#4.删除列
+#5.修改表名
+
+#修改列名
+语法：
+ALTER TABLE 表名 CHANGE COLUMN 列名 新列名(类型);
+ALTER TABLE book CHANGE COLUMN pub new_pub(INT);
+
+#修改列的类型或约束
+语法：
+ALTER TABLE 表名 MODIFY COLUMN 列名 新类型;
+
+#添加列
+语法
+ALTER TABLE 表名 ADD COLUMN 新列名 新类型;
+
+#删除列
+语法
+ALTER TABLE 表名 DROP COLUMN 列名
+
+#修改表名
+ALTER TABLE 表名 RENAME TO 新表名
+
+
+#修改表
+ALTER TABLE 表名 ADD|DROP|MODIFY|CHANGE COLUNM ...
+
+#3.表的删除
+DROP TABLE 表名;
+
+#1表的复制：仅复制结构
+CREATE TABLE 复制后的新表名 LIKE 已存在的表名;
+
+#2表的复制：表的结构+数据
+CREATE TABLE 复制后的新表名
+SELECT * FROM 已存在的表名;
+
+#3只复制部分数据
+CREATE TABLE copy
+SELECT id
+FROM table_name;
