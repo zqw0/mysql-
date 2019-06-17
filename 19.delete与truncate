@@ -1,0 +1,12 @@
+发现：delete支持回滚，truncate不支持回滚
+#演示delete
+SET autocommit=0;
+START TRANSACTION;
+DELETE FROM account;
+ROLLBACK;
+
+#演示truncate
+SET autocommit=0;
+START TRANSACTION;
+TRUNCATE TABLE account;
+ROLLBACK;
