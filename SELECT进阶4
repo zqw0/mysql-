@@ -1,0 +1,236 @@
+#进阶4：常见函数
+
+一、单行函数。如concat,length,ifnull等
+二、分组函数，又称为统计函数，聚合函数，组函数
+
+1.单行函数
+1.1 字符函数
+1.2 数学函数
+1.3 日期函数
+1.4 其他函数【补充】
+1.5 流程控制函数【补充】
+
+#1.1字符函数
+  #length
+   select LENGTH('JOHN');
+
+  #concat--拼接
+    select CONCAT('A','V');
+
+  #upper/lower--变大小写
+    SELECT UPPER('john');
+    SELECT LOWER('JOHN');
+    upper变大写字母，lower变小写字母
+
+  #substr--截取字符串索引从1开始
+    SELECT SUBSTR('123456',4);
+    输出456.
+
+    SELECT SUBSTR('123456',2,3);
+    输出234.
+    从索引2开始，长度为3.
+
+  #instr--判断子串是否在主串中。
+    SELECT INSTR('123456','234');
+    如果存在就返回起始索引。
+    输出2.
+    SELECT INSTR('123456','890');
+    如果不存在就返回0；
+    输出0；
+
+  #trim--去空格
+    SELECT TRIM('  123   ');
+    输出123
+
+    去指定字符
+    SELECT TRIM('a' FROM 'aaaaa123aaaa123aaa');
+    输出123aaaa123
+    去前后字符，中间不去
+
+  #lpad--用指定的字符实现左填充指定长度
+    SELECT LPAD('123',10,'*');
+    输出*******123;--整体长度为10，*7个；
+
+    SELECT LPAD('123',2,'*');
+    输出12；
+
+  #rpad--用指定的字符实现右填充指定长度
+
+  #replace 替换
+    SELECT REPLACE('123456','123','2');
+    将字符串123456中的所有123替换为2
+    输出2456；
+
+1.2数学函数
+
+  #round 四舍五入
+  SELECT ROUND(1.35);
+    输出1
+    SELECT ROUND(1.345,2);
+    小数点后保留两位
+    输出1.35
+
+  #ceil 向上取整，天花板函数;
+    SELECT CEIL(1.2);
+    输出2
+
+  #floor 向下取整，地板函数；
+    SELECT FLOOR(1.9);
+    输出1
+
+  #truncate 截断；
+    SELECT TRUNCATE(1.699,1);
+    从第一位小数后截断
+    输出1.6
+
+  #mod 取余
+    SELECT MOD(10,3);
+    SELECT 10%3;
+
+1.3日期函数
+
+  #now 返回当前系统日期+时间
+    SELECT NOW();
+    输出2017-09-29 11:12:38
+
+  #curdate 返回当前系统日期，不包含时间
+    SELECT CURDATE();
+
+  #curtime 返回当前的时间，不包含日期
+    SELECT CURTIME();
+
+  #可以获取指定的部分,年，月，日，小时，分钟，秒
+    SELECT YERA(NOW());
+    SELECT MONTH(NOW());
+
+  #str_to_date:将日期格式的字符转换成指定的日期
+    STR_TO_DATE('9-13-1999','%M-%d-%Y')    1999-09-13
+
+  #date_format:将日期转换成字符
+    DATE_FORMAT('2018/6/6','%Y年%m月%d日')   2018年06月06日
+
+    %m  月份（01,02,03,11,12）；
+    %c  月份（1,2,3,11,12）；
+    %H 24小时制
+    %h 12小时制
+    %i 分钟（00,01,02,03,59）；
+    %s 秒 （00,01,02,59）；
+
+  #查询入职日期为1992--4-3的员工信息
+    SELECT * FROM employees WHERE hiredate=STR_TO_DATE('4-3 1992','%c-%d %Y');
+
+    SELECT DATE_FORMAT(NOW(),'%Y年%m月%d日');
+    输出2017年09月29日
+
+1.4其他函数
+  SELECT VERSION();
+  SELECT DATABASE();
+  SELECT USER();
+
+1.5流程控制函数
+  #1：if 函数：if else 的效果
+    SELECT IF(expr1,expr2,expr3);
+    如果expr1成立就执行expr2,否则就执行expr3；
+    SELECT IF(10>5,'big','small');
+
+  #2:case函数
+    switch(变量或表达式){
+    case 常量1:语句1;break;
+    default:语句n;break;
+}
+
+  mysql中
+  case 要判断的字段或表达式
+  when 常量1 then 要显示的值或语句1;
+  when 常量2 then 要显示的值或语句2;
+  else 要显示的值n或语句n
+  end
+
+  #案例：查询员工的工资，要求
+部门号=30，显示的工资为1.1倍
+部门号=40，显示的工资为1.2倍
+部门号=50，显示的工资为1.3倍
+其他显示为原来的工资
+
+  SELECT salary,id,
+  CASE ID
+  WHEN 30 THEN salary*1.1
+  WHEN 40 THEN salary*1.2
+  WHEN 50 THEN salary*1.3
+  ELSE salary
+  END AS new_salary
+  FROM employees;
+
+  #2case 函数的使用二，类似于 多重if
+    case
+    when 条件1 then 要显示的值1或语句1
+    when 条件2 then 要显示的值2或语句2
+    ...
+    else 要显示的值n或语句n
+    end
+
+#案例：查询员工的工资的情况
+如果工资>20000,显示A级别
+如果工资>15000,显示B级别
+如果工资>10000,显示C级别
+否则，显示D级别
+
+  SELECT salary,
+  CASE
+  WHEN salary>20000 then 'A'
+  WHEN salary>15000 then 'B'
+  WHEN salary>15000 then 'C'
+  ELSE 'C'
+  END from employees;
+
+#题目
+1.显示系统时间（注：日期+时间）
+SELECT now();
+
+#2查询员工号，姓名，工资，以及工资提高百分之20后的结果（NEW salary）
+SELECT id,name,salary,salary*1.2 AS "NEW salary" from eloypees;
+
+#3将员工姓名按首字母排序，并写出姓名的长度（LENGTH）
+SELECT LENGTH(name) from employees ORDER BY SUBSTR(name,1,1);
+
+#4做一个查询，产生下面结果
+<name> earns <salary> monthly but wants <salary*3>
+SELECT CONCAT(name,'earns',salary,'monthly but wants',salary*3);
+
+#5使用CASE-WHEN 按照下面的条件
+SELECT job,
+CASE
+WHEN job='AD_PRES' THEN 'A'
+WEHN job='ST_MAN' THEN 'B'
+WHEN job='IT_PROG' THEN 'C'
+ELSE ''
+END from employees;
+
+#二、分组函数
+  功能：用作统计使用，又称为聚合函数或统计函数或组函数
+
+  sum 求和,avg 平均值,max 最大值,min 最小值,count 计算个数
+
+  所有分组函数都忽略NULL 值
+  #1简单使用
+    SELECT SUM(salary) FROM employees;
+    SELECT MIN(salary) FROM employees;
+    SELECT MAX(salary) FROM employees;
+    SELECT AVG(salary) FROM employees;
+    SELECT COUNT(salary) FROM employees;
+
+  #2可以和distinct搭配使用
+    SELECT SUM(DISTINCT salary) FROM employees;
+    SELECT COUNT(DISTINCT salary) FROM employees;--使用较多
+
+  #3COUNT函数的详细介绍
+    SELECT COUNT(salary) FROM employees;
+    SELECT COUNT(*) FROM employees;--统计表中行数
+    SELECT COUNT(1) FROM employees;--统计表中行数,相当于在表中加了一列1，统计1的个数
+
+  #4和分组函数一同查询的字段有限制
+    SELECT AVG(salary),id FROM employees;
+    id查出来有错误
+
+  #案例：查询员工表中的最大入职时间和最小入职时间的相差天数（DIFFRENCE）
+    SELECT DATEDIFF(max(date),min(date)) from employees;
