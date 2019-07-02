@@ -28,7 +28,7 @@ INOUT：该参数可以作为输入|输出，需要传入值，又可以返回�
     语法:
     DELIMITER 结束标记
     样例：
-    DELIMITER $;
+    DELIMITER $
 
 #二、调用语法
 
